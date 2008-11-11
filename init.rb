@@ -1,0 +1,1 @@
+require 'la-coctelera-pagination'
