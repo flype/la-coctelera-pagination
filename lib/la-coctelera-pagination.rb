@@ -1,3 +1,5 @@
+require 'digest/md5'
+
 module LaCoctelera
   
   class InvalidPage < ArgumentError
@@ -9,15 +11,15 @@ module LaCoctelera
     # (el nombre viene del LIMIT de SQL)
     attr_reader :page, :per_page, :limit, :params, :global_page, :key_name, :next_key_name, :down_limit, :upper_limit
     
-    def initialize(page, per_page, limit, params)
+    def initialize(page, per_page, limit, params, extra_identifier = nil)
       @page = page.nil? ? 1 : page.to_i
       @per_page = per_page.to_i
       @limit = limit
       @params = params
       @global_page = (page-1)/(limit/per_page) rescue 0
       @global_page = 0 if @global_page < 0
-      @key_name = "#{@params[:controller]}##{@params[:action]}##{@params[:username]}##{@global_page}"
-      @next_key_name = "#{@params[:controller]}##{@params[:action]}##{@params[:username]}##{@global_page+1}"
+      @key_name = Digest::MD5.hexdigest("#{params.to_s}##{@global_page}")
+      @next_key_name = Digest::MD5.hexdigest("#{params.to_s}##{@global_page+1}")
       
       reference_page = (@page%(@limit/@per_page))
       reference_page = (@limit/@per_page) if reference_page == 0
