@@ -59,6 +59,8 @@ module LaCoctelera
     end
     
     def self.get_or_set_from_cache(key_name, ttl, &block)
+      return result = yield if RAILS_ENV != "production"
+        
       unless ::Rails.cache.read(key_name)
         result = yield
         begin
