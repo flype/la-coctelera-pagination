@@ -59,15 +59,15 @@ module LaCoctelera
     end
     
     def self.get_or_set_from_cache(key_name, ttl, &block)
-      unless CACHE.get(key_name)
+      unless ::Rails.cache.read(key_name)
         result = yield
         begin
-          CACHE.set(key_name, result, ttl)
+          ::Rails.cache.write(key_name, result, :expires_in => ttl) 
         rescue MemCache::MemCacheError
         end
         result
       else
-        CACHE.get(key_name)
+        ::Rails.cache.read(key_name)
       end        
     end
     
