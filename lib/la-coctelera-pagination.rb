@@ -16,7 +16,7 @@ module LaCoctelera
       @per_page = per_page.to_i
       @limit = limit
       @params = { :action => params['action'] , :controller => params['controller'], :username => params['username']}
-      @global_page = (page-1)/(limit/per_page) rescue 0
+      @global_page = (@page-1)/(limit/per_page) rescue 0
       @global_page = 0 if @global_page < 0
       @key_name = Digest::MD5.hexdigest("#{@params.to_s}##{extra_identifier}##{@global_page}")
       @next_key_name = Digest::MD5.hexdigest("#{@params.to_s}##{extra_identifier}##{@global_page+1}")
